@@ -1,0 +1,549 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "API сервиса единой поисковой строки",
+    "description" : "Описание API единой поисковой строки, позволяющей производить поиск по различным индексам",
+    "version" : "1.0.1"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "tags" : [ {
+    "name" : "Поиск по индексу"
+  }, {
+    "name" : "Запись данных в индекс"
+  } ],
+  "paths" : {
+    "/search" : {
+      "post" : {
+        "tags" : [ "Поиск по индексу" ],
+        "summary" : "Поиск и получение поисковых подсказок по различным блокам индекса - Реализовано",
+        "description" : "Принимает на вход поисковую строку, введенную пользователем, и выдает краткие поисковые подсказки из различных блоков поискового индекса\n",
+        "operationId" : "search",
+        "requestBody" : {
+          "description" : "Полное описание добавляемой в индекс записи",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/search"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Найденные поисковые подсказки",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/multiple_search_for_ui"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ошибочные параметры запроса"
+          }
+        }
+      }
+    },
+    "/full_search" : {
+      "post" : {
+        "tags" : [ "Поиск по индексу" ],
+        "summary" : "adds an inventory item",
+        "description" : "Принимает на вход поисковую строку, введенную пользователем, и выдает полные данные поиска из различных блоков поискового индекса",
+        "operationId" : "full_search",
+        "requestBody" : {
+          "description" : "Полное описание добавляемой в индекс записи",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/search"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Найденные поисковые данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/full_search_results"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Ошибочные параметры запроса"
+          }
+        }
+      }
+    },
+    "/extra" : {
+      "post" : {
+        "tags" : [ "Поиск по индексу" ],
+        "summary" : "Получение подсказки/пояснение по записи индекса  - Реализовано",
+        "description" : "Принимает на вход данные поисковой строки и выбранный пользователем объект индекса и возвращает дополнительное пояснение/подсказку по этому объекту",
+        "operationId" : "extra",
+        "requestBody" : {
+          "description" : "Описание выбранного пользователем элемента для запроса дополнительны сведений",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/extra"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Подсказка/пояснение по объекту индекса",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/get_item_clicked_output"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Неверные параметры запроса"
+          }
+        }
+      }
+    },
+    "/send_feedback" : {
+      "post" : {
+        "tags" : [ "Поиск по индексу" ],
+        "summary" : "Передача обратной связи по результатам работы пользователя с поисковой выдачей - Январь 2020",
+        "description" : "Принимает на вход данные поисковой строки и выбранный пользователем объект индекса\n",
+        "operationId" : "send_feedback",
+        "requestBody" : {
+          "description" : "Описание выбранного пользователем элемента",
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/feedback_request"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Подсказка/пояснение по объекту индекса",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Неверные параметры запроса"
+          }
+        }
+      }
+    },
+    "/add_data": {
+      "post": {
+        "tags": [
+          "Запись данных в индекс"
+        ],
+        "summary": "Добавление записи в индекс - Январь 2020",
+        "description": "Добавление отдельной записи в индекс - Январь 2020",
+        "operationId": "add_index",
+        "requestBody": {
+          "description": "Полное описание добавляемой в индекс записи - Январь 2020",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/index_data_item"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Запись добавлена успешно"
+          },
+          "400": {
+            "description": "Неверные данные"
+          },
+          "409": {
+            "description": "Запись уже существует"
+          }
+        }
+      }
+    },
+    "/update_data": {
+      "put": {
+        "tags": [
+          "Редактирование отдельной записи"
+        ],
+        "summary": "Редактирование отдельной записи - Январь 2020",
+        "description": "Редактирование отдельной записи - Январь 2020",
+        "operationId": "update_index",
+        "parameters": [
+          {
+            "name": "blocks",
+            "in": "query",
+            "description": "Блок индекса, в которым редактируется запись",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Идентификатор объекта индекса",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "Январь 2020"
+          }
+        }
+      }
+    },
+    "/delete_data": {
+      "delete": {
+        "tags": [
+          "Удаление отдельной записи из индекса"
+        ],
+        "summary": "Удаление отдельной записи из индекса - Январь 2020",
+        "description": "Удаление отдельной записи из индекса - Январь 2020",
+        "operationId": "delete_index",
+        "responses": {
+          "default": {
+            "description": "В разарботке - Январь 2020"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "search" : {
+        "required" : [ "limit_block", "limit_total", "search_index_names_par", "search_string" ],
+        "type" : "object",
+        "properties" : {
+          "search_string" : {
+            "type" : "string",
+            "description" : "Поисковая строка, введенная пользователем"
+          },
+          "search_index_names_par" : {
+            "type" : "array",
+            "description" : "Массив названий блоков индекса, в которых должен производиться поиск",
+            "items" : {
+              "type" : "string",
+              "description" : "Название блока индекса",
+              "example" : "Услуги РЭЦ, tnved | okved"
+            }
+          },
+          "limit_block" : {
+            "maximum" : 50,
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Максимальное количество записей, возвращаемых по каждому блоку индекса",
+            "format" : "int32",
+            "default" : 5
+          },
+          "limit_total" : {
+            "maximum" : 200,
+            "minimum" : 1,
+            "type" : "integer",
+            "description" : "Максимальное количество записей, возвращаемых по всем блокам индекса",
+            "format" : "int32",
+            "default" : 50
+          }
+        }
+      },
+      "extra" : {
+        "required" : [ "code", "search_string" ],
+        "type" : "object",
+        "properties" : {
+          "search_string" : {
+            "type" : "string",
+            "description" : "Поисковая строка, введенная пользователем"
+          },
+          "code" : {
+            "type" : "string",
+            "description" : "Название блока индекса, в котором должен производиться поиск",
+            "example" : "Услуги РЭЦ, tnved | okved"
+          }
+        }
+      },
+      "feedback_request" : {
+        "required" : [ "search_string", "search_index_names_par", "user_choice", "user_id" ],
+        "type" : "object",
+        "properties" : {
+          "search_string" : {
+            "type" : "string",
+            "description" : "Поисковая строка, введенная пользователем"
+          },
+          "search_index_names_par" : {
+            "type" : "string",
+            "description" : "Название блока индекса, в котором производился поиск",
+            "example" : "Услуги РЭЦ"
+          },
+          "user_choice" : {
+            "type" : "string",
+            "description" : "Выбор пользователя"
+          },
+          "user_id" : {
+            "type" : "string",
+            "description" : "Id зарегистрированного пользователя"
+          }
+        }
+      },
+      "multiple_search_for_ui" : {
+        "type" : "array",
+        "description" : "Массив с поисковыми подсказками",
+        "items" : {
+          "$ref" : "#/components/schemas/search_string"
+        }
+      },
+      "search_string" : {
+        "required" : [ "block", "create_date", "header", "id", "score_block", "score_total", "tags", "url" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "block" : {
+            "type" : "string",
+            "example" : "Услуги РЭЦ"
+          },
+          "tags" : {
+            "type" : "string",
+            "example" : "tnved | okved"
+          },
+          "header" : {
+            "type" : "string",
+            "example" : "Услуга по поддержке экспортеров"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Краткое неиндексируемое описание объекта индекса, выводимое впоследствии в качестве пояснения к header.",
+            "example" : "Закажите услугу по поддержке экспортеров "
+          },
+          "url" : {
+            "type" : "string",
+            "format" : "url",
+            "example" : "/services?someService"
+          },
+          "create_date" : {
+            "type" : "string",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          },
+          "score_block" : {
+            "maximum" : 1,
+            "minimum" : 0,
+            "type" : "number",
+            "description" : "Значение релевантности записи нормированное в рамках блока, используемое для сортировки выдачи"
+          },
+          "score_total" : {
+            "minimum" : 0,
+            "type" : "number",
+            "description" : "Абслютное значение релевантности записи, используемое для сортировки выдачи"
+          }
+        }
+      },
+      "get_item_clicked_output" : {
+        "required" : [ "code", "search_string" ],
+        "type" : "object",
+        "properties" : {
+          "search_string" : {
+            "type" : "string",
+            "example" : "Результат вызова подсказки Extra"
+          },
+          "code" : {
+            "type" : "string",
+            "example" : "tnved | okved"
+          }
+        }
+      },
+      "full_search_results" : {
+        "type" : "array",
+        "description" : "Массив с результатами полного поиска",
+        "items" : {
+          "$ref" : "#/components/schemas/full_search_string"
+        }
+      },
+      "full_search_string" : {
+        "required" : [ "block", "create_date", "description", "fulltext", "header", "id", "logo", "score_block", "score_total", "tags", "url" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Уникальный в рамках блока идентификатор записи. Используется для последующего редактирования данных. Для результата по ТНВЭД здесь будет код ТНВЭД",
+            "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "block" : {
+            "type" : "string",
+            "description" : "Название блока индекса",
+            "example" : "Услуги РЭЦ"
+          },
+          "header" : {
+            "type" : "string",
+            "example" : "Услуга по поддержке экспортеров"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Краткое неиндексируемое описание объекта индекса, выводимое впоследствии в качестве пояснения к header",
+            "example" : "Закажите услугу по поддержке экспортеров "
+          },
+          "url" : {
+            "type" : "string",
+            "format" : "url",
+            "example" : "/services?someService"
+          },
+          "logo" : {
+            "$ref" : "#/components/schemas/full_search_string_logo"
+          },
+          "tags" : {
+            "type" : "array",
+            "description" : "Список тегов, привязанных к записи индекса",
+            "items" : {
+              "type" : "string",
+              "example" : "Услуги РЭЦ"
+            }
+          },
+          "create_date" : {
+            "type" : "string",
+            "description" : "Дата создание во внешней системе индексируемого объекта (дата создания страницы/новости)",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          },
+          "score" : {
+            "maximum" : 1,
+            "minimum" : 0,
+            "type" : "number",
+            "description" : "Значение релевантности записи нормированное в рамках блока, используемое для сортировки выдачи"
+          },
+          "score_total" : {
+            "minimum" : 0,
+            "type" : "number",
+            "description" : "Абслютное значение релевантности записи, используемое для сортировки выдачи"
+          }
+        }
+      },
+      "index_data_item" : {
+        "required" : [ "access", "block", "create_date", "description", "fulltext", "header", "id", "logo", "phrases", "priority", "tags", "time_to_live", "url" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Уникальный в рамках блока идентификатор записи. Используется для последующего редактирования данных. При индексировании контента справочников типа ТНВЭД в качестве идентификатора исполбзуются коды справочника",
+            "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+          },
+          "block" : {
+            "type" : "string",
+            "description" : "Название блока индекса. Для поиска по  ТНВЭД надо задавать значение = 'ТНВЭД'",
+            "example" : "Услуги РЭЦ"
+          },
+          "header" : {
+            "type" : "string",
+            "description" : "Название объекта индекса",
+            "example" : "Услуга по поддержке экспортеров. Не индексируется"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Краткое неиндексируемое описание объекта индекса, выводимое впоследствии в качестве пояснения к header. Не индексируется",
+            "example" : "Закажите услугу по поддержке экспортеров "
+          },
+          "fulltext" : {
+            "type" : "string",
+            "description" : "Полный текст, который должен быть проиндексирован для полнотекстового поиска. Индексируется с базовым приоритетом",
+            "example" : "Полное описание услуги по поддержке экспортеров со всеми подробностями и связанными данными"
+          },
+          "phrases" : {
+            "type" : "array",
+            "description" : "Список ключевых слов и фраз, которые должны использоваться при поиске с бОльшим приоритетом, чем индексируемый текст. Индексируется с высоким приоритетом",
+            "items" : {
+              "type" : "string",
+              "example" : "поддержка экспорта"
+            }
+          },
+          "url" : {
+            "type" : "string",
+            "description" : "Ссылка на страницу",
+            "format" : "url",
+            "example" : "/services?someService"
+          },
+          "logo" : {
+            "$ref" : "#/components/schemas/full_search_string_logo"
+          },
+          "tags" : {
+            "type" : "array",
+            "description" : "Список тегов, привязанных к записи индекса. Не индексируется",
+            "items" : {
+              "type" : "string",
+              "example" : "Услуги РЭЦ"
+            }
+          },
+          "access" : {
+            "type" : "string",
+            "description" : "Уровень доступа к записи. Доступные варианты: public, authorized",
+            "example" : "public"
+          },
+          "priority" : {
+            "maximum" : 1000,
+            "minimum" : 0,
+            "type" : "integer",
+            "description" : "Назначаемый в рамках блока/источника приоритет объекта, используемый для сортировка выдачи",
+            "example" : 100,
+            "default" : 500
+          },
+          "create_date" : {
+            "type" : "string",
+            "description" : "Дата создание во внешней системе индексируемого объекта (дата создания страницы/новости)",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          },
+          "time_to_live" : {
+            "type" : "string",
+            "description" : "Дата окончания действия записи. После этой даты запись не будет выдавать в результатах поиска и может быть удалена из БД",
+            "format" : "date-time",
+            "example" : "2016-08-29T09:12:33.001Z"
+          }
+        }
+      },
+      "full_search_string_logo" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "service.png"
+          },
+          "file-data" : {
+            "type" : "string",
+            "example" : "ABCDBDBDBABBDBABDA676574654"
+          },
+          "mime-type" : {
+            "type" : "string",
+            "example" : "image/png"
+          },
+          "url" : {
+            "type" : "string",
+            "example" : "images/someLogo.png"
+          }
+        },
+        "description" : "Изображение размером до 128х128 с пиктограммой блока/источника данных либо объекта. Передается в виде отдельного объекта с метаданными и закодированным в формате base64, либо в виде ссылки на файл"
+      }
+    }
+  }
+}
